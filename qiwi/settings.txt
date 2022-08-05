@@ -1,0 +1,5 @@
+
+{
+    "amount": 500,
+    "qiwi_api": "116d52a6bdcdc33a488d82b9e736bc7c"
+}
