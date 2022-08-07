@@ -27,7 +27,10 @@ class GetCodeAPIView(generics.RetrieveAPIView):
         code = request.query_params.get('uniquecode')
         key = get_key(code)
         if key is False:
-            info = check_code(code=code, guid=setting.digi_code, seller_id=setting.seller_id)
+            try:
+                info = check_code(code=code, guid=setting.digi_code, seller_id=setting.seller_id)
+            except:
+                return Response(f"Ваш код не действителен", status=status.HTTP_201_CREATED)
             if info['retval'] == 0:
                 value = setting.course * float(info['value'])
                 try:
@@ -37,6 +40,8 @@ class GetCodeAPIView(generics.RetrieveAPIView):
                 except Exception as e:
                     Code.objects.create(code=code, status=False, amount=value, username=info['username'], error=str(e))
                     return Response(f"Произошла ошибка - обратитесь к продавцу", status=status.HTTP_201_CREATED)
+            else:
+                return Response(f"Ваш код не действителен", status=status.HTTP_201_CREATED)
 
         else:
             return Response(f"Ваш код уже обработан", status=status.HTTP_201_CREATED)
