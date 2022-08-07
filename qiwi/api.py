@@ -35,10 +35,17 @@ def check_code(code: str, guid: str = '22882862E75441D5B0DC400A77F4972D', seller
 
     response = requests.get(f'https://oplata.info/api/purchases/unique-code/{code}?token={token}')
     result_json = json.loads(response.content.decode('utf8'))
+    print(result_json)
+    try:
+        value = result_json['options'][1]['value'].split(' ')[0]
+        if float(value) < 5:
+            value = result_json['cnt_goods']
+    except IndexError:
+        value = result_json['cnt_goods']
     return {
         'retval': result_json['retval'],
         'username': result_json['options'][0]['value'],
-        "value": result_json['options'][1]['value'].split(' ')[0]}
+        "value": value}
 
 
-print(check_code('A90D58716FD8459A'))
+# print(check_code('A1686F6ADEBB4ADC'))
