@@ -4,6 +4,17 @@ from hashlib import sha256
 import json
 
 
+def is_digit(string):
+    if string.isdigit():
+       return True
+    else:
+        try:
+            float(string)
+            return True
+        except ValueError:
+            return False
+
+
 def check_code(code: str, guid: str = '22882862E75441D5B0DC400A77F4972D', seller_id: int = 224269):
     timestamp = str(int(time.time()))
 
@@ -36,7 +47,10 @@ def check_code(code: str, guid: str = '22882862E75441D5B0DC400A77F4972D', seller
     result_json = json.loads(response.content.decode('utf8'))
     try:
         value = result_json['options'][1]['value'].split(' ')[0]
-        if float(value) < 5:
+        if is_digit(value) is not False:
+            if float(value) < 5:
+                value = result_json['cnt_goods']
+        else:
             value = result_json['cnt_goods']
     except IndexError:
         value = result_json['cnt_goods']
