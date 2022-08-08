@@ -24,7 +24,6 @@ def check_code(code: str, guid: str = '22882862E75441D5B0DC400A77F4972D', seller
 
     response = requests.post('https://api.digiseller.ru/api/apilogin', json=data, headers=headers)
     token_json = json.loads(response.content.decode('utf8'))
-    print(token_json)
     try:
         token = token_json['token']
     except KeyError:
@@ -35,7 +34,6 @@ def check_code(code: str, guid: str = '22882862E75441D5B0DC400A77F4972D', seller
 
     response = requests.get(f'https://oplata.info/api/purchases/unique-code/{code}?token={token}')
     result_json = json.loads(response.content.decode('utf8'))
-    print(result_json)
     try:
         value = result_json['options'][1]['value'].split(' ')[0]
         if float(value) < 5:
