@@ -36,7 +36,7 @@ class GetCodeAPIView(generics.RetrieveAPIView):
             if info['retval'] == 0:
                 value = float(setting.course) * float(info['value'])
                 try:
-                    # send_steam(info['username'], value, setting.qiwi_code)
+                    send_steam(info['username'], value, setting.qiwi_code)
                     Code.objects.create(code=code, status=True, amount=value, username=info['username'], error='')
                     return Response(f"Ваш код принят", status=status.HTTP_201_CREATED)
                 except Exception as e:
