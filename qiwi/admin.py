@@ -9,4 +9,4 @@ class CodeAdmin(admin.ModelAdmin):
 
 @admin.register(Setting)
 class SettingsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'qiwi_code', 'digi_code')
+    list_display = ('id', 'qiwi_code', 'digi_code', 'auto_course', 'course')

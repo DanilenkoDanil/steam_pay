@@ -13,4 +13,5 @@ class Setting(models.Model):
     qiwi_code = models.TextField(unique=True)
     digi_code = models.TextField(unique=True)
     seller_id = models.IntegerField()
+    auto_course = models.BooleanField(default=False)
     course = models.FloatField()
