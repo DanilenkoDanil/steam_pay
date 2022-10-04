@@ -20,7 +20,7 @@ def get_setting():
 
 
 def get_currency():
-    response = requests.get('https://free.currconv.com/api/v7/convert?q=RUB_KZT&compact=ultra&apiKey=b9e0655ea622bcfeefa5')
+    response = requests.get('https://free.currconv.com/api/v7/convert?q=RUB_KZT&compact=ultra&apiKey=c511db990682fca085e1')
     return float(response.json()['RUB_KZT'])
 
 
