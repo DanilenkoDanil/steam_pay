@@ -78,8 +78,18 @@ class JustPayAPIView(generics.RetrieveAPIView):
             print('sssend')
             payment_obj.status = True
             payment_obj.save()
-            return JsonResponse(f"Success", status=status.HTTP_201_CREATED)
+            response = {
+                'status': 'Success',
+                'username': login,
+                'amount': amount
+            }
+            return JsonResponse(response, status=status.HTTP_201_CREATED)
         except Exception as e:
             payment_obj.error = str(e)
             payment_obj.save()
-            return JsonResponse(f"Failure", status=status.HTTP_400_BAD_REQUEST)
+            response = {
+                'status': 'Failure',
+                'username': login,
+                'amount': amount
+            }
+            return JsonResponse(response, status=status.HTTP_400_BAD_REQUEST)
