@@ -9,6 +9,13 @@ class Code(models.Model):
     error = models.TextField()
 
 
+class Payment(models.Model):
+    status = models.BooleanField(default=False)
+    amount = models.FloatField()
+    username = models.CharField(max_length=200)
+    error = models.TextField()
+
+
 class Setting(models.Model):
     qiwi_code = models.TextField(unique=True)
     digi_code = models.TextField(unique=True)

@@ -60,4 +60,5 @@ def check_code(code: str, guid: str = '22882862E75441D5B0DC400A77F4972D', seller
         "value": value}
 
 
-# print(check_code('A1686F6ADEBB4ADC'))
+if __name__ == '__main__':
+    print(check_code('6E0F409D2F874551'))

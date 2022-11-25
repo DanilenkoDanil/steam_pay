@@ -3,7 +3,7 @@ from rest_framework import viewsets, status, generics, permissions, views
 from rest_framework.response import Response
 from rest_framework.permissions import DjangoModelPermissions
 from .send import send_steam
-from .models import Code, Setting
+from .models import Code, Setting, Payment
 from .api import check_code
 import requests
 
@@ -20,7 +20,7 @@ def get_setting():
 
 
 def get_currency():
-    response = requests.get('https://free.currconv.com/api/v7/convert?q=RUB_KZT&compact=ultra&apiKey=c511db990682fca085e1')
+    response = requests.get('https://free.currconv.com/api/v7/convert?q=RUB_KZT&compact=ultra&apiKey=b9e0655ea622bcfeefa5')
     return float(response.json()['RUB_KZT'])
 
 
@@ -48,6 +48,7 @@ class GetCodeAPIView(generics.RetrieveAPIView):
                                                error='')
                 try:
                     send_steam(info['username'], value, setting.qiwi_code)
+                    print('sssend')
                     code_obj.status = True
                     code_obj.save()
                     return Response(f"Ваш код принят", status=status.HTTP_201_CREATED)
@@ -60,3 +61,24 @@ class GetCodeAPIView(generics.RetrieveAPIView):
 
         else:
             return Response(f"Ваш код уже обработан", status=status.HTTP_201_CREATED)
+
+
+class JustPayAPIView(generics.RetrieveAPIView):
+    queryset = Code.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def retrieve(self, request, *args, **kwargs):
+        setting = get_setting()
+        login = request.query_params.get('login')
+        amount = request.query_params.get('amount')
+        payment_obj = Payment.objects.create(status=False, amount=amount, username=login, error='')
+        try:
+            # send_steam(login, amount, setting.qiwi_code)
+            print('sssend')
+            payment_obj.status = True
+            payment_obj.save()
+            return Response(f"Запрос принят", status=status.HTTP_201_CREATED)
+        except Exception as e:
+            payment_obj.error = str(e)
+            payment_obj.save()
+            return Response(f"Произошла ошибка - обратитесь к продавцу", status=status.HTTP_201_CREATED)
