@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Code, Setting, Payment
+from .models import Code, Setting, Payment, Qiwi
 
 
 @admin.register(Code)
@@ -14,4 +14,9 @@ class PaymentAdmin(admin.ModelAdmin):
 
 @admin.register(Setting)
 class SettingsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'qiwi_code', 'digi_code', 'auto_course', 'course')
+    list_display = ('id', 'qiwi_limit', 'digi_code', 'auto_course', 'course')
+
+
+@admin.register(Qiwi)
+class QiwiAdmin(admin.ModelAdmin):
+    list_display = ('id', 'qiwi_code', 'current_counter', 'timer')
