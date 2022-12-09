@@ -91,7 +91,7 @@ class JustPayAPIView(generics.RetrieveAPIView):
         payment_obj = Payment.objects.create(status=False, amount=amount, username=login, error='')
         try:
             print(get_qiwi(amount))
-            # send_steam(login, amount, get_qiwi(amount))
+            send_steam(login, amount, get_qiwi(amount))
             payment_obj.status = True
             payment_obj.save()
             response = {
