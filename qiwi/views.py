@@ -21,12 +21,15 @@ def get_setting():
 
 def get_qiwi(value: float):
     setting = get_setting()
+    delta_time = date.today() - timedelta(days=1)
     for qiwi in Qiwi.objects.all():
         if qiwi.current_counter + value < setting.qiwi_limit:
             qiwi.current_counter += value
             qiwi.save()
             return qiwi.qiwi_code
-        elif date.today() - timedelta(days=1) < qiwi.timer:
+        elif date(delta_time.year, delta_time.month, delta_time.day) > date(qiwi.timer.year,
+                                                                            qiwi.timer.month,
+                                                                            qiwi.timer.day):
             qiwi.current_counter = value
             qiwi.timer = date.today()
             qiwi.save()
@@ -87,7 +90,8 @@ class JustPayAPIView(generics.RetrieveAPIView):
         amount = float(request.query_params.get('amount'))
         payment_obj = Payment.objects.create(status=False, amount=amount, username=login, error='')
         try:
-            send_steam(login, amount, get_qiwi(amount))
+            print(get_qiwi(amount))
+            # send_steam(login, amount, get_qiwi(amount))
             payment_obj.status = True
             payment_obj.save()
             response = {
