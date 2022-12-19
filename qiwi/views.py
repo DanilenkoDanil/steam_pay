@@ -24,16 +24,14 @@ def get_qiwi(value: float):
     delta_time = date.today() - timedelta(days=1)
     for qiwi in Qiwi.objects.all():
         if qiwi.current_counter + value < setting.qiwi_limit:
-            qiwi.current_counter += value
-            qiwi.save()
-            return qiwi.qiwi_code
+            return qiwi, qiwi.qiwi_code
         elif date(delta_time.year, delta_time.month, delta_time.day) > date(qiwi.timer.year,
                                                                             qiwi.timer.month,
                                                                             qiwi.timer.day):
-            qiwi.current_counter = value
+            qiwi.current_counter = 0
             qiwi.timer = date.today()
             qiwi.save()
-            return qiwi.qiwi_code
+            return qiwi, qiwi.qiwi_code
     return False
 
 
@@ -65,7 +63,10 @@ class GetCodeAPIView(generics.RetrieveAPIView):
                 code_obj = Code.objects.create(code=code, status=False, amount=value, username=info['username'],
                                                error='')
                 try:
-                    send_steam(info['username'], value, get_qiwi(value))
+                    qiwi, key = get_qiwi(value)
+                    send_steam(info['username'], value, key)
+                    qiwi.current_counter += value
+                    qiwi.save()
                     print('sssend')
                     code_obj.status = True
                     code_obj.save()
