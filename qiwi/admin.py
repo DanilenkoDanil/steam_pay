@@ -1,10 +1,15 @@
 from django.contrib import admin
-from .models import Code, Setting, Payment, Qiwi
+from .models import Code, Setting, Payment, Qiwi, Interhub
 
 
 @admin.register(Code)
 class CodeAdmin(admin.ModelAdmin):
     list_display = ('code', 'username', 'amount', 'status')
+
+
+@admin.register(Interhub)
+class InterhubAdmin(admin.ModelAdmin):
+    list_display = ('token', )
 
 
 @admin.register(Payment)

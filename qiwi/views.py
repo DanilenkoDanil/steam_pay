@@ -1,7 +1,7 @@
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
-from .send import send_steam
-from .models import Code, Setting, Payment, Qiwi
+from .send import send_steam, send_steam_ozon
+from .models import Code, Setting, Payment, Qiwi, Interhub
 from .api import check_code
 import requests
 from django.http import JsonResponse
@@ -90,12 +90,9 @@ class JustPayAPIView(generics.RetrieveAPIView):
         login = request.query_params.get('login')
         amount = float(request.query_params.get('amount'))
         payment_obj = Payment.objects.create(status=False, amount=amount, username=login, error='')
+        token = Interhub.objects.get(id=1).token
         try:
-            print(get_qiwi(amount))
-            qiwi, code = get_qiwi(amount)
-            send_steam(login, amount, code)
-            qiwi.current_counter += amount
-            qiwi.save()
+            send_steam_ozon(login, amount, token)
             payment_obj.status = True
             payment_obj.save()
             response = {
