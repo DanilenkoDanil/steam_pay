@@ -39,7 +39,7 @@ def check(account: str, amount: float, authorization: str):
         "params": {}
     }
     headers = {
-        'token': 'okhwhalpvuf10Y8EEMA-JhBPn1?ckHvZX9vatbpUrGlrB1'
+        'token': authorization
     }
 
     response = requests.request("POST", url, headers=headers, json=payload)
@@ -56,7 +56,7 @@ def pay(transaction: str, authorization: str):
         "checkTransactionId": transaction
     }
     headers = {
-        'token': 'okhwhalpvuf10Y8EEMA-JhBPn1?ckHvZX9vatbpUrGlrB1'
+        'token': authorization
     }
 
     response = requests.request("POST", url, headers=headers, json=payload)
@@ -69,5 +69,16 @@ def send_steam_ozon(login: str, amount: float, authorization: str) -> bool:
     return True
 
 
+def get_balance(authorization: str) -> float:
+    url = "https://api.interhub.uz/api/agent/deposit"
+
+    payload = {}
+    headers = {
+        'token': authorization
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    return float(response.json()['balance'])
 # send_steam('sh33shka', 560, '5a6d1dac7d9455bed78462ab4858c8c1')
 # send_steam_ozon('sh33shka', 560, '5a6d1dac7d9455bed78462ab4858c8c1')

@@ -32,3 +32,4 @@ class Qiwi(models.Model):
 
 class Interhub(models.Model):
     token = models.TextField(unique=True)
+    balance = models.FloatField(default=0)

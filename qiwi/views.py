@@ -1,6 +1,6 @@
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
-from .send import send_steam, send_steam_ozon
+from .send import send_steam, send_steam_ozon, get_balance
 from .models import Code, Setting, Payment, Qiwi, Interhub
 from .api import check_code
 import requests
@@ -90,9 +90,11 @@ class JustPayAPIView(generics.RetrieveAPIView):
         login = request.query_params.get('login')
         amount = float(request.query_params.get('amount'))
         payment_obj = Payment.objects.create(status=False, amount=amount, username=login, error='')
-        token = Interhub.objects.get(id=1).token
+        interhub = Interhub.objects.get(id=1)
         try:
-            send_steam_ozon(login, amount, token)
+            send_steam_ozon(login, amount, interhub.token)
+            interhub.balance = get_balance(interhub.token)
+            interhub.save()
             payment_obj.status = True
             payment_obj.save()
             response = {

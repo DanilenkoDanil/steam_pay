@@ -9,7 +9,7 @@ class CodeAdmin(admin.ModelAdmin):
 
 @admin.register(Interhub)
 class InterhubAdmin(admin.ModelAdmin):
-    list_display = ('token', )
+    list_display = ('token', 'balance')
 
 
 @admin.register(Payment)
