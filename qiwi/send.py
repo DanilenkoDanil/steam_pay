@@ -34,7 +34,7 @@ def check(account: str, amount: float, authorization: str):
     payload = {
         "amount": amount,
         "service_id": 92,
-        "agent_transaction_id": str(timer + 68846442),
+        "agent_transaction_id": str(timer + 668846442),
         "account": account,
         "params": {}
     }
