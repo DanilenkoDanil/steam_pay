@@ -90,7 +90,7 @@ class JustPayAPIView(generics.RetrieveAPIView):
         login = request.query_params.get('login')
         amount = float(request.query_params.get('amount'))
         payment_obj = Payment.objects.create(status=False, amount=amount, username=login, error='')
-        interhub = Interhub.objects.get(id=1)
+        interhub = Interhub.objects.all().last()
         try:
             send_steam_ozon(login, amount, interhub.token)
             interhub.balance = get_balance(interhub.token)
