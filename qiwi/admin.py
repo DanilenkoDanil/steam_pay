@@ -21,6 +21,7 @@ class InterhubAdmin(admin.ModelAdmin):
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('username', 'amount', 'status', 'user', 'date')
     list_filter = ('user', 'date')
+    search_fields = ('date', 'username')
 
 
 @admin.register(Setting)
