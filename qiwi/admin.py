@@ -19,8 +19,9 @@ class InterhubAdmin(admin.ModelAdmin):
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('username', 'amount', 'status', 'user')
-    list_filter = ('user',)
+    list_display = ('username', 'amount', 'status', 'user', 'date')
+    list_filter = ('user', 'date')
+
 
 @admin.register(Setting)
 class SettingsAdmin(admin.ModelAdmin):
