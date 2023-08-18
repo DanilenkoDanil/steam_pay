@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Code(models.Model):
@@ -7,6 +8,12 @@ class Code(models.Model):
     amount = models.FloatField()
     username = models.CharField(max_length=200)
     error = models.TextField()
+    date = models.DateTimeField(auto_created=True, null=True, blank=True)
+
+
+class UserLimitation(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    now_balance = models.FloatField(default=0)
 
 
 class Payment(models.Model):
@@ -14,6 +21,7 @@ class Payment(models.Model):
     amount = models.FloatField()
     username = models.CharField(max_length=200)
     error = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Setting(models.Model):

@@ -1,16 +1,24 @@
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from .send import send_steam, send_steam_ozon, get_balance
-from .models import Code, Setting, Payment, Qiwi, Interhub
+from .models import Code, Setting, Payment, Qiwi, Interhub, UserLimitation
 from .api import check_code
 import requests
 from django.http import JsonResponse
 from datetime import date, timedelta
+from qiwi.serializers import PaymentSerializer
 
 
 def get_key(key: str):
     try:
         return Code.objects.filter(code=key)[0]
+    except IndexError:
+        return False
+
+
+def get_user_limit(user):
+    try:
+        return UserLimitation.objects.filter(user=user)[0]
     except IndexError:
         return False
 
@@ -89,7 +97,15 @@ class JustPayAPIView(generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         login = request.query_params.get('login')
         amount = float(request.query_params.get('amount'))
-        payment_obj = Payment.objects.create(status=False, amount=amount, username=login, error='')
+
+        user_limit = get_user_limit(request.user)
+        if user_limit is not False:
+            if user_limit.now_balance < amount:
+                return JsonResponse('Insufficient balance', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return JsonResponse('Limit not set', status=status.HTTP_400_BAD_REQUEST)
+
+        payment_obj = Payment.objects.create(status=False, amount=amount, username=login, error='', user=request.user)
         interhub = Interhub.objects.all().last()
         try:
             send_steam_ozon(login, amount, interhub.token)
@@ -97,6 +113,8 @@ class JustPayAPIView(generics.RetrieveAPIView):
             interhub.save()
             payment_obj.status = True
             payment_obj.save()
+            user_limit.now_balance -= amount
+            user_limit.save()
             response = {
                 'status': 'Success',
                 'username': login,
@@ -112,3 +130,32 @@ class JustPayAPIView(generics.RetrieveAPIView):
                 'amount': amount
             }
             return JsonResponse(response, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserLimitationView(generics.RetrieveAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def retrieve(self, request, *args, **kwargs):
+        user = self.request.user
+        try:
+            user_limitation = UserLimitation.objects.get(user=user)
+            response_data = {
+                'user': user.username,
+                'now_balance': user_limitation.now_balance
+            }
+            return Response(response_data, status=200)
+        except UserLimitation.DoesNotExist:
+            response_data = {
+                'user': user.username,
+                'message': 'User limitation data not found'
+            }
+            return Response(response_data, status=404)
+
+
+class UserPaymentsView(generics.ListAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = PaymentSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Payment.objects.filter(user=user)
