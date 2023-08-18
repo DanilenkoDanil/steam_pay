@@ -22,7 +22,7 @@ class Payment(models.Model):
     username = models.CharField(max_length=200)
     error = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    date = models.DateTimeField(auto_created=True, null=True, blank=True)
+    date = models.DateTimeField(auto_now=True, null=True, blank=True)
 
 
 class Setting(models.Model):
