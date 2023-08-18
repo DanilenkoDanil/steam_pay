@@ -4,7 +4,7 @@ from .models import Code, Setting, Payment, Qiwi, Interhub, UserLimitation
 
 @admin.register(Code)
 class CodeAdmin(admin.ModelAdmin):
-    list_display = ('code', 'username', 'amount', 'status', 'user')
+    list_display = ('code', 'username', 'amount', 'status')
 
 
 @admin.register(UserLimitation)
@@ -19,8 +19,8 @@ class InterhubAdmin(admin.ModelAdmin):
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('username', 'amount', 'status')
-
+    list_display = ('username', 'amount', 'status', 'user')
+    list_filter = ('user',)
 
 @admin.register(Setting)
 class SettingsAdmin(admin.ModelAdmin):
