@@ -91,7 +91,7 @@ class GetCodeAPIView(generics.RetrieveAPIView):
 
 
 class JustPayAPIView(generics.RetrieveAPIView):
-    queryset = Code.objects.all()
+    queryset = Payment.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
 
     def retrieve(self, request, *args, **kwargs):
@@ -134,6 +134,7 @@ class JustPayAPIView(generics.RetrieveAPIView):
 
 class UserLimitationView(generics.RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
+    queryset = UserLimitation.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
         user = self.request.user
@@ -153,6 +154,7 @@ class UserLimitationView(generics.RetrieveAPIView):
 
 
 class UserPaymentsView(generics.ListAPIView):
+    queryset = Payment.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = PaymentSerializer
 
