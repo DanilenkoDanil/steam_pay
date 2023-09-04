@@ -62,6 +62,25 @@ Authorization: Token YOUR_AUTH_TOKEN
             </pre>
         </div>
         <div class="endpoint">
+            <h2>api/check/</h2>
+            <p>To check the possibility of translation</p>
+            <p><strong>Parameters:</strong></p>
+            <ul>
+                <li><strong>login</strong> (string): Steam username.</li>
+                <li><strong>amount</strong> (integer): Amount in ukz to transfer.</li>
+            </ul>
+            <p><strong>Request Headers:</strong></p>
+            <ul>
+                <li><strong>Authorization: Token YOUR_AUTH_TOKEN</strong></li>
+            </ul>
+            <p><strong>Example Request:</strong></p>
+            <pre>
+GET api/check/?login=nickname&amount=7000 HTTP/1.1
+Host: your-api-url.com
+Authorization: Token YOUR_AUTH_TOKEN
+            </pre>
+        </div>
+        <div class="endpoint">
             <h2>api/get-balance/</h2>
             <p>Endpoint for retrieving user balance.</p>
             <p><strong>Request Headers:</strong></p>

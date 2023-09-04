@@ -43,8 +43,28 @@ def check(account: str, amount: float, authorization: str):
     }
 
     response = requests.request("POST", url, headers=headers, json=payload)
+    print(response.json())
 
     return response.json()['transaction_id']
+
+
+def check_full(account: str, amount: float, authorization: str):
+    url = "https://api.interhub.uz/api/payment/check"
+    timer = time.time()
+    payload = {
+        "amount": amount,
+        "service_id": 92,
+        "agent_transaction_id": str(timer + 668846442),
+        "account": account,
+        "params": {}
+    }
+    headers = {
+        'token': authorization
+    }
+
+    response = requests.request("POST", url, headers=headers, json=payload)
+
+    return response.json()
 
 
 def pay(transaction: str, authorization: str):
@@ -80,5 +100,8 @@ def get_balance(authorization: str) -> float:
     response = requests.request("GET", url, headers=headers, data=payload)
 
     return float(response.json()['balance'])
+
+
+# check('11', 1, '5a6d1dac7d9455bed78462ab4858c8c1')
 # send_steam('sh33shka', 560, '5a6d1dac7d9455bed78462ab4858c8c1')
 # send_steam_ozon('sh33shka', 560, '5a6d1dac7d9455bed78462ab4858c8c1')

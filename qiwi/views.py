@@ -1,6 +1,6 @@
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
-from .send import send_steam, send_steam_ozon, get_balance
+from .send import send_steam, send_steam_ozon, get_balance, check_full
 from .models import Code, Setting, Payment, Qiwi, Interhub, UserLimitation
 from .api import check_code
 import requests
@@ -161,3 +161,15 @@ class UserPaymentsView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return Payment.objects.filter(user=user)
+
+
+class CheckPaymentView(generics.RetrieveAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = UserLimitation.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        login = request.query_params.get('login')
+        amount = float(request.query_params.get('amount'))
+        interhub = Interhub.objects.all().last()
+        response_data = check_full(login, amount, interhub.token)
+        return Response(response_data, status=200)
