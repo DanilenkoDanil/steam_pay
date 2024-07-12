@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = True
 SECRET_KEY = key
 
-ALLOWED_HOSTS = ['127.0.0.1', '77.232.136.196']
+ALLOWED_HOSTS = ['127.0.0.1', '83.222.9.140']
 
 
 # Application definition
