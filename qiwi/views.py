@@ -71,14 +71,14 @@ class GetCodeAPIView(generics.RetrieveAPIView):
                 code_obj = Code.objects.create(code=code, status=False, amount=value, username=info['username'],
                                                error='')
                 try:
-                    qiwi, key = get_qiwi(value)
-                    send_steam(info['username'], value, key)
-                    qiwi.current_counter += value
-                    qiwi.save()
+                    interhub = Interhub.objects.all().last()
+                    send_steam_ozon(info['username'], value, interhub.token)
+                    interhub.balance = get_balance(interhub.token)
+                    interhub.save()
                     print('sssend')
                     code_obj.status = True
                     code_obj.save()
-                    return Response(f"Ваш код принят", status=status.HTTP_201_CREATED)
+                    return Response(f"Ваш аккаунт пополнен", status=status.HTTP_201_CREATED)
                 except Exception as e:
                     code_obj.error = str(e)
                     code_obj.save()
