@@ -64,7 +64,7 @@ class GetCodeAPIView(generics.RetrieveAPIView):
                 return Response(f"Ваш код не действителен", status=status.HTTP_201_CREATED)
             if info['retval'] == 0:
                 currency = float(setting.course)
-                value = currency * float(info['value'])
+                value = float(info['value']) / currency
                 code_obj = Code.objects.create(code=code, status=False, amount=value, username=info['username'],
                                                error='')
                 try:
